@@ -51,3 +51,29 @@ export default function CustomersScreen() {
     </ScrollView>
   );
 }
+
+/*import { gql, useQuery } from '@apollo/client';
+
+export function MyComponent() {
+  const { loading, error, data } = useQuery(gql`  query getTrackingItems {
+    getCustomers {
+      name
+      value {
+        email
+        name
+      }
+    }
+  }`, {
+    variables: {},
+  })
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Something went wrong...</p>;
+
+  return (
+    <p>
+      {console.log(data)}
+    </p>
+  )
+}
+*/
