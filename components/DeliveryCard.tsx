@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { useTailwind } from "tailwind-rn";
 import { Card, Icon } from "@rneui/themed";
+import MapView, { Marker } from "react-native-maps";
 
 type Props = {
   customerOrder: Order;
@@ -41,7 +42,7 @@ export default function DeliveryCard({ customerOrder }: Props) {
 
         <Card.Divider color="white" />
 
-        <View style={tw("mx-auto py-2")}>
+        <View style={tw("mx-auto pb-5")}>
           <Text style={tw("text-base text-center text-white font-bold")}>
             Address
           </Text>
@@ -65,6 +66,27 @@ export default function DeliveryCard({ customerOrder }: Props) {
           </View>
         ))}
       </View>
+      <MapView
+        initialRegion={{
+          latitude: customerOrder.Lat,
+          longitude: customerOrder.Lng,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }}
+        style={[tw("w-full"), { height: 200 }]}
+      >
+        {customerOrder.Lat && customerOrder.Lat && (
+          <Marker
+            coordinate={{
+              latitude: customerOrder.Lat,
+              longitude: customerOrder.Lng,
+            }}
+            title="Delivery Location"
+            description={customerOrder.Address}
+            identifier="destination"
+          />
+        )}
+      </MapView>
     </Card>
   );
 }
