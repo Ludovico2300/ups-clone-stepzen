@@ -2,13 +2,15 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from "./TabNavigator";
 import ModalScreen from "../screens/ModalScreen";
+import OrdersScreen from "../screens/OrdersScreen";
+import OrderScreen from "../screens/OrderScreen";
 
 // type for props passed to any component of that stack navigation (undefined if no props passed),
 //the name of the page on the ParamList has to be the same of the name of the page on the RootStack.Screen
 export type RootStackParamList = {
   Main: undefined;
   MyModal: { userId: string; name: string };
-  Order: { order: any };
+  Order: { order: Order };
 };
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -30,6 +32,10 @@ export default function RootNavigator() {
           name="MyModal"
           component={ModalScreen}
         />
+      </RootStack.Group>
+
+      <RootStack.Group>
+        <RootStack.Screen name="Order" component={OrderScreen} />
       </RootStack.Group>
     </RootStack.Navigator>
   );

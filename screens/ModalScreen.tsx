@@ -53,10 +53,8 @@ export default function ModalScreen() {
       <FlatList
         contentContainerStyle={{ paddingBottom: 200 }}
         data={customerOrders}
-        keyExtractor={(customerOrder) => customerOrder.trackingId}
-        renderItem={({ item: customerOrder }) => (
-          <DeliveryCard customerOrder={customerOrder} />
-        )}
+        keyExtractor={(order) => order.trackingId}
+        renderItem={({ item: order }) => <DeliveryCard order={order} />}
       />
     </SafeAreaView>
   );

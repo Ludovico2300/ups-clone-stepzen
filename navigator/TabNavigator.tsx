@@ -41,7 +41,7 @@ export default function TabNavigator() {
               <Icon
                 name="box"
                 type="entypo"
-                color={focused ? "#59C1CC" : "grey"}
+                color={focused ? "#EB6A7C" : "grey"}
               />
             );
           }

@@ -5,18 +5,19 @@ import { Card, Icon } from "@rneui/themed";
 import MapView, { Marker } from "react-native-maps";
 
 type Props = {
-  customerOrder: Order;
+  order: Order;
+  fullWidth?: boolean;
 };
 
-export default function DeliveryCard({ customerOrder }: Props) {
+export default function DeliveryCard({ order, fullWidth }: Props) {
   const tw = useTailwind();
 
   return (
     <Card
       containerStyle={[
-        tw("rounded-lg my-2"),
+        tw(`${fullWidth ? "rounded-none m-0" : "rounded-lg"} my-2`),
         {
-          backgroundColor: "#59C1CC",
+          backgroundColor: fullWidth ? "#EB6A7C" : "#59C1CC",
           padding: 0,
           paddingTop: 16,
           shadowColor: "black",
@@ -26,67 +27,70 @@ export default function DeliveryCard({ customerOrder }: Props) {
         },
       ]}
     >
-      <View>
+      <View style={fullWidth && { height: "100%" }}>
         <Icon name="box" type="entypo" size={50} color={"white"} />
-        <View>
-          <Text
-            style={tw("text-xs text-center uppercase font-bold text-white")}
-          >
-            {customerOrder.carrier} - {customerOrder.trackingId}
-          </Text>
-          <Text style={tw("text-lg text-center font-bold text-white")}>
-            Expexted Delivery:
-            {new Date(customerOrder.createdAt).toLocaleDateString()}
-          </Text>
+        <View style={tw("items-start p-5 -mt-3")}>
+          <View style={tw("mx-auto")}>
+            <Text
+              style={tw("text-xs text-center uppercase font-bold text-white")}
+            >
+              {order.carrier} - {order.trackingId}
+            </Text>
+            <Text style={tw("text-lg text-center font-bold text-white")}>
+              Expexted Delivery:
+              {new Date(order.createdAt).toLocaleDateString()}
+            </Text>
+
+            <Card.Divider color="white" />
+          </View>
+
+          <View style={tw("mx-auto pb-5")}>
+            <Text style={tw("text-base text-center text-white font-bold")}>
+              Address
+            </Text>
+            <Text style={tw("text-sm text-center text-white")}>
+              {order.Address}
+            </Text>
+            <Text style={tw("text-sm text-center text-white italic")}>
+              Shipping Cost: €{order.shippingCost}
+            </Text>
+          </View>
         </View>
 
         <Card.Divider color="white" />
-
-        <View style={tw("mx-auto pb-5")}>
-          <Text style={tw("text-base text-center text-white font-bold")}>
-            Address
-          </Text>
-          <Text style={tw("text-sm text-center text-white")}>
-            {customerOrder.Address}
-          </Text>
-          <Text style={tw("text-sm text-center text-white italic")}>
-            Shipping Cost: €{customerOrder.shippingCost}
-          </Text>
+        <View style={tw("p-5")}>
+          {order.trackingItems.items.map((item: Items) => (
+            <View
+              style={tw("flex-row justify-between items-center")}
+              key={item.item_id}
+            >
+              <Text style={tw("text-sm italic text-white")}>{item.name}</Text>
+              <Text style={tw("text-xl text-white")}>x {item.quantity}</Text>
+            </View>
+          ))}
         </View>
+        <MapView
+          initialRegion={{
+            latitude: order.Lat,
+            longitude: order.Lng,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
+          style={[tw("w-full"), { flexGrow: 1 }, !fullWidth && { height: 200 }]}
+        >
+          {order.Lat && order.Lat && (
+            <Marker
+              coordinate={{
+                latitude: order.Lat,
+                longitude: order.Lng,
+              }}
+              title="Delivery Location"
+              description={order.Address}
+              identifier="destination"
+            />
+          )}
+        </MapView>
       </View>
-      <Card.Divider color="white" />
-      <View style={tw("p-5")}>
-        {customerOrder.trackingItems.items.map((item: Items) => (
-          <View
-            style={tw("flex-row justify-between items-center")}
-            key={item.item_id}
-          >
-            <Text style={tw("text-sm italic text-white")}>{item.name}</Text>
-            <Text style={tw("text-xl text-white")}>x {item.quantity}</Text>
-          </View>
-        ))}
-      </View>
-      <MapView
-        initialRegion={{
-          latitude: customerOrder.Lat,
-          longitude: customerOrder.Lng,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}
-        style={[tw("w-full"), { height: 200 }]}
-      >
-        {customerOrder.Lat && customerOrder.Lat && (
-          <Marker
-            coordinate={{
-              latitude: customerOrder.Lat,
-              longitude: customerOrder.Lng,
-            }}
-            title="Delivery Location"
-            description={customerOrder.Address}
-            identifier="destination"
-          />
-        )}
-      </MapView>
     </Card>
   );
 }
