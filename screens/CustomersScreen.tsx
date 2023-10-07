@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
+import { ScrollView, ActivityIndicator } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { useTailwind } from "tailwind-rn";
 import {
@@ -12,11 +6,14 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { TabStackParamList } from "../navigatore/TabNavigator";
+import { TabStackParamList } from "../navigator/TabNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigatore/RootNavigator";
+import { RootStackParamList } from "../navigator/RootNavigator";
 import { Image } from "@rneui/themed";
 import { Input } from "@rneui/base";
+import { useQuery } from "@apollo/client";
+import { GET_CUSTOMERS } from "../graphql/queries";
+import CustomerCard from "../components/CustomerCard";
 
 export type CustomersScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabStackParamList, "Customers">,
@@ -27,6 +24,7 @@ export default function CustomersScreen() {
   const tw = useTailwind();
   const navigation = useNavigation<CustomersScreenNavigationProp>();
   const [input, setInput] = useState<string>("");
+  const { data, error, loading } = useQuery(GET_CUSTOMERS);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,32 +46,13 @@ export default function CustomersScreen() {
         onChangeText={setInput}
         containerStyle={tw("bg-white pt-5 pb-0 px-10")}
       />
+      {data?.getCustomers
+        ?.filter((customer: CustomerList) =>
+          customer.value.name.includes(input)
+        )
+        .map(({ name: ID, value: { email, name } }: CustomerResponse) => (
+          <CustomerCard key={ID} userId={ID} name={name} email={email} />
+        ))}
     </ScrollView>
   );
 }
-
-/*import { gql, useQuery } from '@apollo/client';
-
-export function MyComponent() {
-  const { loading, error, data } = useQuery(gql`  query getTrackingItems {
-    getCustomers {
-      name
-      value {
-        email
-        name
-      }
-    }
-  }`, {
-    variables: {},
-  })
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Something went wrong...</p>;
-
-  return (
-    <p>
-      {console.log(data)}
-    </p>
-  )
-}
-*/

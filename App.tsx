@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
 import { NavigationContainer } from "@react-navigation/native";
-import RootNavigator from "./navigatore/RootNavigator";
+import RootNavigator from "./navigator/RootNavigator";
 import {
   ApolloClient,
   InMemoryCache,
