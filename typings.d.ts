@@ -38,6 +38,6 @@ type OrderResponse = {
 };
 
 type CustomerResponse = {
-  value: ID;
-  name: Customer;
+  value: Customer;
+  name: ID;
 };
